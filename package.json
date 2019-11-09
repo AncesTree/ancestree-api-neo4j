@@ -1,0 +1,26 @@
+{
+  "name": "ancestree-api-neo4j",
+  "version": "1.0.0",
+  "description": "Ancestree API for Neo4j DB",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "neode",
+    "neo4j",
+    "graph",
+    "cypher",
+    "ogm"
+  ],
+  "dependencies": {
+    "express": "^4.15.3",
+    "express-session": "^1.15.6",
+    "neode": "^0.2.3",
+    "@neode/express": ""
+  },
+  "devDependencies": {
+    "eslint": "^4.18.2"
+  }
+}
