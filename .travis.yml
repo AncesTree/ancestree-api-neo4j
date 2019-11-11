@@ -1,0 +1,16 @@
+language: node_js
+node_js: 12
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on: master
+before_install:
+- openssl aes-256-cbc -K $encrypted_8a61eae0c2cc_key -iv $encrypted_8a61eae0c2cc_iv
+  -in .travis/deploy.key.enc -out .travis/deploy.key -d
+- chmod +x ./deploy.sh
+- eval "$(ssh-agent -s)"
+- chmod 600 .travis/deploy.key
+- ssh-add .travis/deploy.key
+- ssh-keyscan igpolytech.fr >> ~/.ssh/known_hosts
+- git remote add deploy dokku@igpolytech.fr:ancestree-api-neo4j
+- git config --global push.default simple
