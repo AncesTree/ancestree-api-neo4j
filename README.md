@@ -25,9 +25,9 @@ node server.js
 ```
 ### Put some data in neo4j
 
-Post use application/json
+Post using application/json header
 
-####Post to http://localhost:3000/api/users to create users
+#### Post to http://localhost:3000/api/users to create users
 
 {
     "firstname": "hugo",
@@ -37,11 +37,11 @@ Post use application/json
     "phone": "0000000"
 }
 
-####Post to http://localhost:3000/api/relationship to create relationship (using users id)
+#### Post to http://localhost:3000/api/relationship to create relationship (using users id)
 
 {
 	"actor": "__id1__",
 	"other": "__id2__",
 	"type":"follows",
-	"properties" : []
+	"properties" : { "since" : "12" }
 }

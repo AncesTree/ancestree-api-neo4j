@@ -14,17 +14,18 @@ module.exports = function(neode) {
 
     router.post('/api/relationship', (req, res) => {
         const data = Object.assign({}, req.params, req.body)
+        console.log(data)
                 Promise.all([
                     neode.find('User', data.actor),
                     neode.find('User', data.other)]
                  )
                  .then( ([a, b]) => {
-                    console.log(a, b)
-                    a.relateTo(b, data.type, {})
+                    a.relateTo(b, data.type, data.properties)
                     .then(res => { 
                         res.toJson}
                         )
                     .then(json => {
+                        res.status(201)
                         res.send(json);
                     })
                     .catch(e => res.status(500).send)
