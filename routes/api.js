@@ -9,28 +9,45 @@
  * @param {Neode} neode  Neode instance
  * @return {Router}      Express router
  */
-module.exports = function(neode) {
+module.exports = function (neode) {
     const router = require('express').Router();
 
     router.post('/api/relationship', (req, res) => {
         const data = Object.assign({}, req.params, req.body)
-        console.log(data)
-                Promise.all([
-                    neode.find('User', data.actor),
-                    neode.find('User', data.other)]
-                 )
-                 .then( ([a, b]) => {
-                    a.relateTo(b, data.type, data.properties)
-                    .then(res => { 
-                        res.toJson}
-                        )
+        Promise.all([
+            neode.find('User', data.actor),
+            neode.find('User', data.other)]
+        )
+            .then(([a, b]) => {
+                a.relateTo(b, data.type, data.properties)
+                    .then(res => {
+                        res.toJson
+                    }
+                    )
                     .then(json => {
                         res.status(201)
                         res.send(json);
                     })
                     .catch(e => res.status(500).send)
-                }
-                ).catch(e => res.status(500).send)
+            }
+            ).catch(e => res.status(500).send)
+    });
+
+    router.get('/api/query/lineage/:a_id', (req, res) => {
+        Promise.all([
+            neode.cypher('MATCH (a:User {id:{a_id}})-[:SENIOR*1..25]->(b:User), p=shortestPath((a:User {id:{a_id}})-[:SENIOR*1..25]->(b:User)) return b, p', req.params),
+            neode.cypher('MATCH (a:User {id:{a_id}})-[:JUNIOR*1..25]->(b:User) return b', req.params)
+        ])
+            .then(([senior, junior]) => {
+                return {"senior": senior.records, "junior": junior.records};
+            })
+            .then(result =>
+                res.status(200).send(result)
+            )
+            .catch(e => {
+                res.status(500).send(e.stack);
+            });
+
     });
 
     return router;

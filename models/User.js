@@ -34,10 +34,24 @@ module.exports = {
     },
 
     follows: {
-        type: 'relationship',
+        type: 'relationships',
         target: 'User',
         relationship: 'FOLLOW',
         direction: 'out',
-        eager: true
+        eager: false
+    },
+    isSenior: {
+        type: 'relationships',
+        target: 'User',
+        relationship: 'SENIOR',
+        direction: 'out',
+        eager: false
+    },
+    isJunior: {
+        type: 'relationships',
+        target: 'User',
+        relationship: 'JUNIOR',
+        direction: 'out',
+        eager: false
     },
 };

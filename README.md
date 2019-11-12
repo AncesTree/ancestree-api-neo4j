@@ -28,7 +28,7 @@ node server.js
 Post using application/json header
 
 #### Post to http://localhost:3000/api/users to create users
-
+```
 {
     "firstname": "hugo",
     "lastname": "lacombe",
@@ -36,12 +36,14 @@ Post using application/json header
     "email": "salut@tous",
     "phone": "0000000"
 }
+```
 
 #### Post to http://localhost:3000/api/relationship to create relationship (using users id)
-
+```
 {
 	"actor": "__id1__",
 	"other": "__id2__",
 	"type":"follows",
 	"properties" : { "since" : "12" }
 }
+```
