@@ -2,6 +2,20 @@
 
 [Neode](http://github.com/adam-cowley/neode) package for NodeJS.
 
+## Routes
+
+### Get Lineage
+
+GET /api/query/lineage/:id
+
+### Create Users
+
+POST /api/users
+
+### Create Relationship
+
+POST /api/relationship
+
 ## Models
 
 The basic models are defined in the `./models` directory.
