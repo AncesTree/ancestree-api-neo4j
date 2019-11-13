@@ -34,22 +34,24 @@ module.exports = function (neode) {
     });
 
     router.get('/api/query/lineage/:a_id', (req, res) => {
-        Promise.all([
+        Promise.all([            
+            neode.find('User', req.params),
             neode.cypher('MATCH (a:User {id:{a_id}})-[:SENIOR*1..25]->(b:User), p=shortestPath((a:User {id:{a_id}})-[:SENIOR*1..25]->(b:User)) return b, p', req.params),
             neode.cypher('MATCH (a:User {id:{a_id}})-[:JUNIOR*1..25]->(b:User), p=shortestPath((a:User {id:{a_id}})-[:JUNIOR*1..25]->(b:User)) return b, p', req.params)    
         ])
-        .then(([senior, junior]) => {
+        .then(([focusUser, senior, junior]) => {
+                let focusUser = focusUser
                 let seniorResult = []
                 let juniorResult = []
                 for (var i = 0; i < senior.records.length; i++) {
                     var obj = { "node": senior.records[i]._fields[0].properties, "distance": senior.records[i]._fields[1].length}
-                    seniorResult.push(obj)
+                    seniorResult.push(obj)  
                 }
                 for (var j = 0; j < junior.records.length; j++) {
                     var obj = { "node": junior.records[j]._fields[0].properties, "distance": junior.records[j]._fields[1].length}
                     juniorResult.push(obj)
                 }
-                return {"senior": seniorResult,"junior": juniorResult}
+                return {"userFocus": {"node": focusUser } , "senior": seniorResult,"junior": juniorResult}
             })
             .then(result =>
                 res.status(200).send(result)
