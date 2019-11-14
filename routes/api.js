@@ -38,7 +38,7 @@ module.exports = function (neode) {
             neode.cypher('MATCH (a:User {id:{a_id}})-[:SENIOR*1..25]->(b:User), p=shortestPath((a:User {id:{a_id}})-[:SENIOR*1..25]->(b:User)) return b, p', req.params),
             neode.cypher('MATCH (a:User {id:{a_id}})-[:JUNIOR*1..25]->(b:User), p=shortestPath((a:User {id:{a_id}})-[:JUNIOR*1..25]->(b:User)) return b, p', req.params)    
         ])
-        .then(([focusUser, senior, junior]) => {
+        .then(([senior, junior]) => {
                 //let focusUser = focusUser
                 let seniorResult = []
                 let juniorResult = []
