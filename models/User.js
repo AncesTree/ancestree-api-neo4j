@@ -25,6 +25,12 @@ module.exports = {
         email: true,
         required: true
     },
+    "start_year": {
+        type: 'string'
+    },
+    "end_year": {
+        type: 'string'
+    },
     "profileImageUrl": {
         type: "string",
         uri: {

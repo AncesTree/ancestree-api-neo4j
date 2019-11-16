@@ -26,7 +26,7 @@ module.exports = function (neode) {
                     )
                     .then(json => {
                         res.status(201)
-                        res.send(json);
+                        res.send({ "actor": a, "other": b, "relation": data.type });
                     })
                     .catch(e => res.status(500).send)
             }
@@ -56,10 +56,50 @@ module.exports = function (neode) {
                 res.status(200).send(result)
             )
             .catch(e => {
-                res.status(500).send(e.stack);
+                res.status(500).send();
             });
 
     });
+
+    router.get('/api/query/promo/:end_year', function(req, res){
+        const data = Object.assign({}, req.params, req.body)
+        const builder = neode.query();    
+        builder.match('p', 'User')
+        .where('p.end_year', data.end_year)
+        .return('p')
+        .execute()
+        .then(records => {
+            return {"promo": records.records }
+        })
+        .then(json => {
+            res.status(200).send(json)
+        })
+        .catch(e => 
+            res.status(500).send())
+      });
+
+    router.get('/api/users/find', function(req, res){
+        var basic = { lastname: "", firstname: "", end_year: "" };
+        const data = Object.assign({}, basic, req.query)
+        //nom + prenom + promo
+        //nom + prenom  
+        //nom + promo
+        //rien
+        neode.cypher('MATCH (a:User) WHERE a.lastname CONTAINS {lastname} AND a.firstname CONTAINS {firstname} return a LIMIT 10', data)    
+        .then(promo => {
+            let promoResults = []
+            for (var j = 0; j < promo.records.length; j++) {
+                var obj = { "node": promo.records[j]._fields[0].properties}
+                promoResults.push(obj)
+            }
+            return {"promo": promoResults }
+        })
+        .then(json => {
+            res.status(200).send(json)
+        })
+        .catch(e => 
+            res.status(500).send(e))
+      });
 
     return router;
 };

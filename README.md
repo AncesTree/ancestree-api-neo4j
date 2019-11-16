@@ -4,17 +4,17 @@
 
 ## Routes
 
-### Get Lineage
-
+GET /api/users
+GET /api/users/:id
 GET /api/query/lineage/:id
-
-### Create Users
+GET /api/query/promo/:end_year
+GET /api/users/find?firstname=&lastname=&end_year=
 
 POST /api/users
-
-### Create Relationship
-
 POST /api/relationship
+
+PUT /api/users/:id
+DELETE /api/users/:id
 
 ## Models
 
