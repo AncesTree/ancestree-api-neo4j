@@ -8,7 +8,7 @@ GET /api/users
 GET /api/users/:id
 GET /api/query/lineage/:id
 GET /api/query/promo/:end_year
-GET /api/users/find?firstname=&lastname=&end_year=
+    GET /api/users/find?firstname=&lastname=&end_year=
 
 POST /api/users
 POST /api/relationship
