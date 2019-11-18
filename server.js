@@ -22,31 +22,41 @@ const neode = require('neode')
 const app = express();
 app.use(cors())
 app.use(bodyParser.json())
-app.use(function (req, res, next) {
-  if (!req.headers.authorization) {
-    res.status(403).send('Unauthorized')
-  }
-  let token = req.headers.authorization;
-  if (token === 'null') {
-    res.status(403).send('Unauthorized')
-  }
-  axios.get('https://ancestree-auth.igpolytech.fr/auth/checktoken', {headers: 
-    {Authorization: token }
-  }).then((result) => {
-    console.log(result.status)
-    if(result.status === 200){
-      next()
-    }
-    else{
+
+const security = process.env.ENV;
+
+if(security === "PROD"){
+  app.use(function (req, res, next) {
+    if (!req.headers.authorization) {
       res.status(403).send('Unauthorized')
     }
-  }).catch(function (error) {
-    // handle error
-    console.log("error middleware check tocken: " + error);
+    let token = req.headers.authorization;
+    if (token === 'null') {
+      res.status(403).send('Unauthorized')
+    }
+    axios.get('https://ancestree-auth.igpolytech.fr/auth/checktoken', 
+    {headers: 
+      {Authorization: token }
+    }).then((result) => {
+      console.log(result.status)
+      console.log(result.body.id) 
+      if(result.status === 200){
+        next()
+      }
+      else{
+        res.status(403).send('Unauthorized')
+      }
+    })
+    .catch(e => {
+      res.status(500).send();})
   })
-})
+}
+
 app.use(require('./routes/api')(neode));
 app.use('/api/users', resource(neode, 'User'))
+app.use(function(req, res){
+  res.status(404).send({});
+});
 
 
 /**
