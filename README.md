@@ -1,19 +1,25 @@
 # Module used
 
-[Neode](http://github.com/adam-cowley/neode) package for NodeJS.
+[Neode](http://github.com/adam-cowley/neode) package for NodeJS. OGM for Neo4j.
 
 ## Routes
 
 GET /api/users
+
 GET /api/users/:id
+
 GET /api/query/lineage/:id
+
 GET /api/query/promo/:end_year
-    GET /api/users/find?firstname=&lastname=&end_year=
+
+GET /api/users/find?firstname=&lastname=&end_year=
 
 POST /api/users
+
 POST /api/relationship
 
 PUT /api/users/:id
+
 DELETE /api/users/:id
 
 ## Models
@@ -33,7 +39,7 @@ NEO4J_PORT=7687
 
 Then run the server
 
-```
+```javascript
 npm install
 node server.js
 ```
@@ -42,6 +48,7 @@ node server.js
 Post using application/json header
 
 #### Post to http://localhost:3000/api/users to create users
+
 ```
 {
     "firstname": "hugo",
