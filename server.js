@@ -40,6 +40,9 @@ app.use(function (req, res, next) {
     else{
       res.status(403).send('Unauthorized')
     }
+  }).catch(function (error) {
+    // handle error
+    console.log("error middleware check tocken: " + error);
   })
 })
 app.use(require('./routes/api')(neode));
