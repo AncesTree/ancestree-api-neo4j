@@ -1,34 +1,35 @@
 module.exports = function (neode) {
     const router = require('express').Router();
-    const filterPrivacy = require('./tools')
+    const tools = require('./tools')
 
     router.post('/api/relationship', (req, res) => {
         const data = Object.assign({}, req.params, req.body)
-        if (data.actor && data.other && data.properties && data.type) {
-            Promise.all([
-                neode.find('User', data.actor),
-                neode.find('User', data.other)]
-            )
-                .then(([a, b]) => {
-                    if (a == false || b == false) {
-                        res.status(422).send({ "Error": "No users found" })
-                    }
-                    else {
-                        a.relateTo(b, data.type, data.properties)
-                            .then(json => {
-                                let filteredActor = json._start._properties
-                                let filteredOther = json._end._properties
-                                res.status(201).send({ "actor": filteredActor, "other": filteredOther });
-                            })
-                            .catch(e => res.status(422).send({ "error": e }))
-                    }
-                })
-                .catch(e => res.status(500).send(e))
-        }
-        else {
+        if (!(data.actor && data.other && data.properties && data.type)) {
             res.status(422).send({ "error": "No argument specified" })
         }
-    });
+        Promise.all([
+            neode.find('User', data.actor),
+            neode.find('User', data.other)])
+            .then(([a, b]) => {
+                if (a == false || b == false) {
+                    res.status(422).send({ "Error": "No users found" })
+                }
+                else {
+                        a.relateTo(b, data.type, data.properties)
+                        .then(json => {
+                            if(data.type == "isSenior" || data.type == "isJunior"){
+                                b.relateTo(a, tools.getOppositeRelationship(data.type), data.properties)
+                            }
+                            let filteredActor = json._start._properties
+                            let filteredOther = json._end._properties
+                            res.status(201).send({ "actor": filteredActor, "other": filteredOther });
+                        })
+                        .catch(e => res.status(422).send({ "error": e }))
+                }
+            })
+            .catch(e => res.status(500).send(e))
+    }
+    );
 
     //privacy done
     router.get('/api/query/lineage/:a_id', (req, res) => {
@@ -41,18 +42,18 @@ module.exports = function (neode) {
                 if (!focus) {
                     res.status(404).send()
                 }
-                let focusUser = filterPrivacy.filterPrivacy(focus.records[0]._fields[0].properties)
+                let focusUser = tools.filterPrivacy(focus.records[0]._fields[0].properties)
                 let seniorResult = []
                 let juniorResult = []
 
                 for (var i = 0; i < senior.records.length; i++) {
-                    let filtered = filterPrivacy.filterPrivacy(senior.records[i]._fields[0].properties)
+                    let filtered = tools.filterPrivacy(senior.records[i]._fields[0].properties)
                     let distance = senior.records[i]._fields[1].length
                     var obj = { "node": filtered, "distance": distance }
                     seniorResult.push(obj)
                 }
                 for (var j = 0; j < junior.records.length; j++) {
-                    let filtered = filterPrivacy.filterPrivacy(junior.records[j]._fields[0].properties)
+                    let filtered = tools.filterPrivacy(junior.records[j]._fields[0].properties)
                     let distance = junior.records[j]._fields[1].length
                     var obj = { "node": filtered, "distance": distance }
                     juniorResult.push(obj)
@@ -78,10 +79,10 @@ module.exports = function (neode) {
             .then(json => {
                 let promoResult = []
                 for (var i = 0; i < json.records.length; i++) {
-                    let filtered = filterPrivacy.filterPrivacy(json.records[i]._fields[0].properties)
+                    let filtered = tools.filterPrivacy(json.records[i]._fields[0].properties)
                     promoResult.push(filtered)
                 }
-                return {"promo": promoResult} 
+                return { "promo": promoResult }
             })
             .then(json => res.status(200).send(json))
             .catch(e =>
@@ -95,7 +96,7 @@ module.exports = function (neode) {
             .then(promo => {
                 let users = []
                 for (var j = 0; j < promo.records.length; j++) {
-                    let filtered = filterPrivacy.filterPrivacy(promo.records[j]._fields[0].properties)
+                    let filtered = tools.filterPrivacy(promo.records[j]._fields[0].properties)
                     users.push(filtered)
                 }
                 return { "users": users }
