@@ -30,7 +30,15 @@ module.exports = {
         type: 'string'
     },
     "end_year": {
+        type: 'string',
+        required: 'true'
+    },
+    "inscription_date": {
         type: 'string'
+    },
+    "privacy": {
+        type: 'string',
+        required: true
     },
     "profileImageUrl": {
         type: "string",

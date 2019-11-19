@@ -1,6 +1,3 @@
-/**
- * A basic example using Express to create a simple movie recommendation engine.
- */
 const express = require('express');
 const bodyParser = require('body-parser')
 const path = require('path');
