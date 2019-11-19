@@ -92,7 +92,7 @@ module.exports = function (neode) {
     router.get('/api/users/find', function (req, res) {
         var basic = { lastname: "", firstname: "", end_year: "" };
         const data = Object.assign({}, basic, req.query)
-        neode.cypher('MATCH (a:User) WHERE a.lastname CONTAINS {lastname} AND a.firstname CONTAINS {firstname} return a LIMIT 10', data)
+        neode.cypher('MATCH (a:User) WHERE a.lastname CONTAINS {lastname} || a.firstname CONTAINS {firstname}  || a.lastname CONTAINS {lastname} ||  a.firstname CONTAINS {firstname} return a LIMIT 10', data)
             .then(promo => {
                 let users = []
                 for (var j = 0; j < promo.records.length; j++) {

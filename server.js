@@ -3,7 +3,8 @@ const bodyParser = require('body-parser')
 const path = require('path');
 var cors = require('cors')
 const resource = require('@neode/express')
-const axios = require('axios');
+const token_check = require('./middlewares/token_check')
+const permission_check = require('./middlewares/access_control')
 
 /**
  * Load Neode with the variables stored in `.env` and tell neode to
@@ -19,39 +20,21 @@ const neode = require('neode')
 const app = express();
 app.use(cors())
 app.use(bodyParser.json())
-
-const security = process.env.ENV;
-
-if(security === "PROD"){
-  app.use(function (req, res, next) {
-    if (!req.headers.authorization) {
-      res.status(403).send('Unauthorized')
-    }
-    let token = req.headers.authorization;
-    if (token === 'null') {
-      res.status(403).send('Unauthorized')
-    }
-    axios.get('https://ancestree-auth.igpolytech.fr/auth/checktoken', 
-    {headers: 
-      {Authorization: token }
-    }).then((result) => {
-      console.log(result.status)
-      console.log(result.body.id) 
-      if(result.status === 200){
-        next()
-      }
-      else{
-        res.status(403).send('Unauthorized')
-      }
-    })
-    .catch(e => {
-      res.status(500).send();})
-  })
-}
-
+/*
+app.use(function (req, res, next) {
+  token_check.auth_check(req, res, next)
+})
+*/
 app.use(require('./routes/api')(neode));
+
+app.use(function (req, res, next) {
+  console.log(req.idFromToken)
+  permission_check.checkWithId(req, res, next, "aa", "a")
+})
+
 app.use('/api/users', resource(neode, 'User'))
-app.use(function(req, res){
+
+app.use(function (req, res) {
   res.status(404).send({});
 });
 
@@ -59,6 +42,6 @@ app.use(function(req, res){
 /**
  * Listen for requests on port 3000
  */
-app.listen(3000, function() {
+app.listen(3000, function () {
   console.log('app listening on http://localhost:3000');
 });
