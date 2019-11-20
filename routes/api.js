@@ -108,18 +108,18 @@ module.exports = function (neode) {
     });
 
     router.get('/api/events', function (req, res) {
-        neode.cypher('MATCH (a:Event) return a LIMIT 10', {})
+    neode.cypher('MATCH p=()-[r:AUTHORED_BY]->() RETURN p LIMIT 25', {})
             .then(events => {
-                let users = []
-                for (var j = 0; j < promo.records.length; j++) {
-                    let filtered = tools.filterPrivacy(promo.records[j]._fields[0].properties)
-                    users.push(filtered)
+                let results = []
+                for (var j = 0; j < events.records.length; j++) {
+                    let event = events.records[j]._fields[0].start.properties
+                    let autor = tools.filterPrivacy(events.records[j]._fields[0].end.properties)    
+                    results.push({"event": event, "autor": autor})
                 }
-                return { "users": users }
+                return results
             })
-            .then(json => {
-                res.status(200).send(json)
-            })
+            .then(json => res.status(200).send(json)
+            )
             .catch(e =>
                 res.status(500).send(e))
     });
