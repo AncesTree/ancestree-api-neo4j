@@ -90,8 +90,26 @@ module.exports = function (neode) {
     router.get('/api/users/find', function (req, res) {
         var basic = { lastname: "", firstname: "", end_year: "" };
         const data = Object.assign({}, basic, req.query)
-        neode.cypher('MATCH (a:User) WHERE a.lastname CONTAINS {lastname} || a.firstname CONTAINS {firstname}  || a.lastname CONTAINS {lastname} ||  a.firstname CONTAINS {firstname} return a LIMIT 10', data)
+        console.log(data)
+        neode.cypher('MATCH (a:User) WHERE (a.lastname CONTAINS {lastname}) OR (a.firstname CONTAINS {firstname})  OR (a.lastname CONTAINS {lastname}) OR (a.firstname CONTAINS {firstname}) return a LIMIT 10', data)
             .then(promo => {
+                let users = []
+                for (var j = 0; j < promo.records.length; j++) {
+                    let filtered = tools.filterPrivacy(promo.records[j]._fields[0].properties)
+                    users.push(filtered)
+                }
+                return { "users": users }
+            })
+            .then(json => {
+                res.status(200).send(json)
+            })
+            .catch(e =>
+                res.status(500).send(e))
+    });
+
+    router.get('/api/events', function (req, res) {
+        neode.cypher('MATCH (a:Event) return a LIMIT 10', {})
+            .then(events => {
                 let users = []
                 for (var j = 0; j < promo.records.length; j++) {
                     let filtered = tools.filterPrivacy(promo.records[j]._fields[0].properties)
