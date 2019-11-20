@@ -3,31 +3,9 @@ module.exports = function (neode) {
     const tools = require('./tools')
 
     router.post('/api/relationship', (req, res) => {
-        const data = Object.assign({}, req.params, req.body)
-        if (!(data.actor && data.other && data.properties && data.type)) {
-            res.status(422).send({ "error": "No argument specified" })
-        }
-        let models = tools.getModels(data.type)
-        Promise.all([
-            neode.find(models[0], data.actor),
-            neode.find(models[1], data.other)])
-            .then(([a, b]) => {
-                if (a == false || b == false) {
-                    res.status(422).send({ "Error": "No users found" })
-                }
-                else {
-                    a.relateTo(b, data.type, data.properties)
-                        .then(json => {
-                            b.relateTo(a, tools.getOppositeRelationship(data.type), data.properties)
-                            .then( json => res.status(201).send() )
-                            .catch(e => res.status(500).send(e))
-                        })
-                        .catch(e => res.status(422).send({ "error": e }))
-                }
-            })
-            .catch(e => res.status(500).send(e))
-    }
-    );
+        let data = Object.assign({}, req.params, req.body)
+        return action = require('../actions/relationship').createRelationship(req, res, tools, neode, data)
+    });
 
     //privacy done
     router.get('/api/query/lineage/:a_id', (req, res) => {
@@ -108,13 +86,13 @@ module.exports = function (neode) {
     });
 
     router.get('/api/events', function (req, res) {
-    neode.cypher('MATCH p=()-[r:AUTHORED_BY]->() RETURN p LIMIT 25', {})
+        neode.cypher('MATCH p=()-[r:AUTHORED_BY]->() RETURN p LIMIT 25', {})
             .then(events => {
                 let results = []
                 for (var j = 0; j < events.records.length; j++) {
                     let event = events.records[j]._fields[0].start.properties
-                    let autor = tools.filterPrivacy(events.records[j]._fields[0].end.properties)    
-                    results.push({"event": event, "autor": autor})
+                    let autor = tools.filterPrivacy(events.records[j]._fields[0].end.properties)
+                    results.push({ "event": event, "autor": autor })
                 }
                 return results
             })
@@ -123,6 +101,31 @@ module.exports = function (neode) {
             .catch(e =>
                 res.status(500).send(e))
     });
+
+    router.post('/api/events', function (req, res) {
+        const data = Object.assign({}, req.params, req.body)
+        const relationship = require('../actions/relationship')
+
+        let props = {
+            id: data.id,
+            title: data.title,
+            content: data.content,
+            link: data.link,
+            date: data.date,
+            actor: data.autor,
+            type: "create",
+            properties: {}
+        }
+            neode.create('Event', props)
+            .then(json => {
+                props.other = json._properties.get('id')
+                relationship.createRelationship(req, res, tools, neode, props)
+            })
+            .catch(e => {
+                console.log(e)
+                res.status(500).send(e)
+            })
+    })
 
     return router;
 };
