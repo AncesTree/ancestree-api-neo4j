@@ -40,19 +40,15 @@ module.exports = {
         type: 'string',
         required: true
     },
+    "departement": {
+        type: 'string',
+        required: true
+    },
     "profileImageUrl": {
         type: "string",
         uri: {
             scheme: ["http", "https"]
         }
-    },
-
-    follows: {
-        type: 'relationships',
-        target: 'User',
-        relationship: 'FOLLOW',
-        direction: 'out',
-        eager: false
     },
     isSenior: {
         type: 'relationships',
@@ -67,5 +63,13 @@ module.exports = {
         relationship: 'JUNIOR',
         direction: 'out',
         eager: false
+    },
+    create: {
+        type: 'relationships',
+        target: 'Post',
+        relationship: 'CREATES',
+        direction: 'out',
+        eager: false,
+        'cascade': 'detach'
     },
 };

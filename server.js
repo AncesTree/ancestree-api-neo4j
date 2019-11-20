@@ -26,16 +26,17 @@ app.use(function (req, res, next) {
 })
 */
 app.use(require('./routes/api')(neode));
-
+/*
 app.use(function (req, res, next) {
   console.log(req.idFromToken)
-  permission_check.checkWithId(req, res, next, "aa", "a")
+  permission_check.checkWithId(req, res, next)
 })
-
+*/
 app.use('/api/users', resource(neode, 'User'))
+app.use('/api/events', resource(neode, 'Event'))
 
 app.use(function (req, res) {
-  res.status(404).send({});
+  res.status(404).send();
 });
 
 

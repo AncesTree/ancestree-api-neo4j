@@ -10,7 +10,9 @@ module.exports = {
     "end_year",
     "inscription_date",
     "privacy",
-    "profileImageUrl"],
+    "profileImageUrl",
+    "departement"
+],
 
     privacy_public : [
         "id",
@@ -22,7 +24,8 @@ module.exports = {
         "start_year",
         "end_year",
         "privacy",
-        "profileImageUrl"],
+        "profileImageUrl",
+        "departement"],
 
     privacy_private : [
         "id",
@@ -31,7 +34,8 @@ module.exports = {
         "start_year",
         "end_year",
         "privacy",
-        "profileImageUrl"
+        "profileImageUrl",
+        "departement"
     ]
 }
 

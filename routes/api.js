@@ -7,22 +7,20 @@ module.exports = function (neode) {
         if (!(data.actor && data.other && data.properties && data.type)) {
             res.status(422).send({ "error": "No argument specified" })
         }
+        let models = tools.getModels(data.type)
         Promise.all([
-            neode.find('User', data.actor),
-            neode.find('User', data.other)])
+            neode.find(models[0], data.actor),
+            neode.find(models[1], data.other)])
             .then(([a, b]) => {
                 if (a == false || b == false) {
                     res.status(422).send({ "Error": "No users found" })
                 }
                 else {
-                        a.relateTo(b, data.type, data.properties)
+                    a.relateTo(b, data.type, data.properties)
                         .then(json => {
-                            if(data.type == "isSenior" || data.type == "isJunior"){
-                                b.relateTo(a, tools.getOppositeRelationship(data.type), data.properties)
-                            }
-                            let filteredActor = json._start._properties
-                            let filteredOther = json._end._properties
-                            res.status(201).send({ "actor": filteredActor, "other": filteredOther });
+                            b.relateTo(a, tools.getOppositeRelationship(data.type), data.properties)
+                            .then( json => res.status(201).send() )
+                            .catch(e => res.status(500).send(e))
                         })
                         .catch(e => res.status(422).send({ "error": e }))
                 }

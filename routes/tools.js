@@ -25,6 +25,25 @@ module.exports.getOppositeRelationship = function (relation) {
             return 'isJunior'
         case 'isJunior':
             return 'isSenior'
+        case 'autor':
+            return 'create'
+        case 'create':
+            return 'autor'
+        default:
+            return relation
+    }
+}
+
+module.exports.getModels = function (relation) {
+    switch (relation) {
+        case 'isSenior':
+            return ['User','User']
+        case 'isJunior':
+            return  ['User','User']
+        case 'autor':
+            return  ['Event','User']
+        case 'create':
+            return  ['User','Event']
         default:
             return relation
     }
