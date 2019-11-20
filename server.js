@@ -26,6 +26,7 @@ app.use(function (req, res, next) {
 })
 
 app.use(require('./routes/api')(neode));
+
 /*
 app.use(function (req, res, next) {
   console.log(req.idFromToken)
