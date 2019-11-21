@@ -147,7 +147,7 @@ module.exports = function (neode) {
                 res.status(500).send(e))
     });
 
-    router.get('/api/users/picture/:a_id', function (req, res) {
+    router.post('/api/users/picture/:a_id', function (req, res) {
         const data = Object.assign({}, req.params, req.body)
         console.log(data)
         neode.find('User', data.a_id)
