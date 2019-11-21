@@ -7,7 +7,7 @@ const token_check = require('./middlewares/token_check')
 const permission_check = require('./middlewares/access_control')
 
 /**
- * Load Neode with the variables stored in `.env` and tell neode to
+ * Load Neode with the variables stored in `.env` and tell ne ode to
  * look for models in the ./models directory.
  */
 const neode = require('neode')

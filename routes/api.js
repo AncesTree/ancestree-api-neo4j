@@ -67,10 +67,9 @@ module.exports = function (neode) {
     });
 
     router.get('/api/users/find', function (req, res) {
-        var basic = { search: ""};
+        var basic = { search: "*"};
         const data = Object.assign({}, basic, req.query)
-        console.log(data)
-        neode.cypher('MATCH (a:User) WHERE (a.lastname CONTAINS {search}) OR (a.firstname CONTAINS {search}) return a LIMIT 15', data)
+        neode.cypher('MATCH (a:User) WHERE (a.lastname =~ "(?i).*'+data.search+'.*") OR (a.firstname =~ "(?i).*'+data.search+'.*") return a LIMIT 15', data)
             .then(promo => {
                 let users = []
                 for (var j = 0; j < promo.records.length; j++) {
@@ -114,7 +113,6 @@ module.exports = function (neode) {
             date: data.date,    
 
             actor: data.id,
-            other: data.id,
             type: "create",
             properties: {}
         }

@@ -18,8 +18,8 @@ module.exports = {
     },
     "link": {
         type: "string",
-        required: false,
-    },
+        required: false
+        },
 
     autor: {
         type: 'relationships',

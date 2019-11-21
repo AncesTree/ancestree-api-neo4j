@@ -49,7 +49,7 @@ module.exports = {
         type: 'string'
     },
     "profession": {
-        type: 'string',
+        type: 'string'
     },
     "profileImageUrl": {
         type: "string",
