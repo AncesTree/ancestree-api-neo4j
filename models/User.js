@@ -45,12 +45,10 @@ module.exports = {
         required: true
     },
     "company": {
-        type: 'string',
-        required: true
+        type: 'string'
     },
     "profession": {
         type: 'string',
-        required: true
     },
     "profileImageUrl": {
         type: "string",

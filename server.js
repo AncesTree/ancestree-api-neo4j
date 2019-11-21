@@ -20,11 +20,11 @@ const neode = require('neode')
 const app = express();
 app.use(cors())
 app.use(bodyParser.json())
-/*
+
 app.use(function (req, res, next) {
   token_check.auth_check(req, res, next)
 })
-*/
+
 app.use(require('./routes/api')(neode));
 
 /*

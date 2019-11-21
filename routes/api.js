@@ -67,10 +67,10 @@ module.exports = function (neode) {
     });
 
     router.get('/api/users/find', function (req, res) {
-        var basic = { lastname: "", firstname: "", end_year: "" };
+        var basic = { search: ""};
         const data = Object.assign({}, basic, req.query)
         console.log(data)
-        neode.cypher('MATCH (a:User) WHERE (a.lastname CONTAINS {lastname}) OR (a.firstname CONTAINS {firstname})  OR (a.lastname CONTAINS {lastname}) OR (a.firstname CONTAINS {firstname}) return a LIMIT 10', data)
+        neode.cypher('MATCH (a:User) WHERE (a.lastname CONTAINS {search}) OR (a.firstname CONTAINS {search}) OR (a.lastname CONTAINS {lastname}) OR (a.firstname CONTAINS {firstname}) return a LIMIT 15', data)
             .then(promo => {
                 let users = []
                 for (var j = 0; j < promo.records.length; j++) {
@@ -112,16 +112,18 @@ module.exports = function (neode) {
             title: data.title,
             content: data.content,
             link: data.link,
-            date: data.date,
-            actor: data.autor,
+            date: data.date,    
+
+            actor: data.id_autor,
+            other: data.id,
             type: "create",
             properties: {}
         }
-            neode.create('Event', props)
+            neode.create('Event', data)
             .then(json => {
                 props.other = json._properties.get('id')
                 relationship.createRelationship(req, res, tools, neode, props)
-            })
+                })
             .catch(e => {
                 console.log(e)
                 res.status(500).send(e)
