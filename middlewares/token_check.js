@@ -13,10 +13,12 @@ module.exports = {
                 headers: {
                     Authorization: token
                 }
-            }).then((result) => {
+            }).then(result => {
                 if (result.status == 200) {
-                    console.log("salut")
-                    //req.idFromToken = result.body.id
+                    console.log(result.data.id)
+                    if(result.data.id){
+                        req.body.id = result.data.id
+                    }
                     return next()
                 }
                 else {
@@ -24,11 +26,8 @@ module.exports = {
                 }
             })
             .catch(e => {
-                if(e.response.status == 403){
-                    res.status(401).send('Unauthorized')
-                }
+                console.log(e.response)
                 res.status(500).send();
             })
     }
-
 }

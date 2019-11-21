@@ -11,8 +11,8 @@ module.exports = function (neode) {
     router.get('/api/query/lineage/:a_id', (req, res) => {
         Promise.all([
             neode.cypher('MATCH (a:User {id:{a_id}}) return a', req.params),
-            neode.cypher('MATCH (a:User {id:{a_id}})-[:SENIOR*1..]->(b:User), p=shortestPath((a:User {id:{a_id}})-[:SENIOR*1..]->(b:User)) return b, p', req.params),
-            neode.cypher('MATCH (a:User {id:{a_id}})-[:JUNIOR*1..]->(b:User), p=shortestPath((a:User {id:{a_id}})-[:JUNIOR*1..]->(b:User)) return b, p', req.params)
+            neode.cypher('MATCH (a:User {id:{a_id}})-[:SENIOR*1..]->(b:User), p=shortestPath((a:User {id:{a_id}})-[:SENIOR*1..]->(b:User)) WHERE NOT a.id = b.id return b, p', req.params),
+            neode.cypher('MATCH (a:User {id:{a_id}})-[:JUNIOR*1..]->(b:User), p=shortestPath((a:User {id:{a_id}})-[:JUNIOR*1..]->(b:User)) WHERE NOT a.id = b.id return b, p', req.params)
         ])
             .then(([focus, senior, junior]) => {
                 if (!focus) {
@@ -40,6 +40,7 @@ module.exports = function (neode) {
                 res.status(200).send(result)
             )
             .catch(e => {
+                console.log(e)
                 res.status(500).send();
             });
 

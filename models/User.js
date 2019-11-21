@@ -44,6 +44,14 @@ module.exports = {
         type: 'string',
         required: true
     },
+    "company": {
+        type: 'string',
+        required: true
+    },
+    "profession": {
+        type: 'string',
+        required: true
+    },
     "profileImageUrl": {
         type: "string",
         uri: {
