@@ -34,7 +34,8 @@ module.exports = {
         required: 'true'
     },
     "inscription_date": {
-        type: 'string'
+        type: 'string',
+        required: 'true'
     },
     "privacy": {
         type: 'string',
