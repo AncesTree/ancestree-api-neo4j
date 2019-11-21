@@ -105,18 +105,18 @@ module.exports = function (neode) {
     router.post('/api/events', function (req, res) {
         const data = Object.assign({}, req.params, req.body)
         const relationship = require('../actions/relationship')
-
-        let props = {
+        let event = {
             title: data.title,
             content: data.content,
             link: data.link,
-            date: data.date,    
-
+            date: data.date, 
+        }
+        let props = {
             actor: data.id,
             type: "create",
             properties: {}
         }
-            neode.create('Event', data)
+            neode.create('Event', event)
             .then(json => {
                 props.other = json._properties.get('id')
                 relationship.createRelationship(req, res, tools, neode, props)
