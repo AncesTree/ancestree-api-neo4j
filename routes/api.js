@@ -70,7 +70,7 @@ module.exports = function (neode) {
         var basic = { search: ""};
         const data = Object.assign({}, basic, req.query)
         console.log(data)
-        neode.cypher('MATCH (a:User) WHERE (a.lastname CONTAINS {search}) OR (a.firstname CONTAINS {search}) OR (a.lastname CONTAINS {lastname}) OR (a.firstname CONTAINS {firstname}) return a LIMIT 15', data)
+        neode.cypher('MATCH (a:User) WHERE (a.lastname CONTAINS {search}) OR (a.firstname CONTAINS {search}) return a LIMIT 15', data)
             .then(promo => {
                 let users = []
                 for (var j = 0; j < promo.records.length; j++) {
