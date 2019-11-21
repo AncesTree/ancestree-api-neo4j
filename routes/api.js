@@ -15,7 +15,7 @@ module.exports = function (neode) {
             neode.cypher('MATCH (a:User {id:{a_id}})-[:JUNIOR*1..]->(b:User), p=shortestPath((a:User {id:{a_id}})-[:JUNIOR*1..]->(b:User)) WHERE NOT a.id = b.id return b, p', req.params)
         ])
             .then(([focus, senior, junior]) => {
-                if (!focus) {
+                if (!focus || !focus.records || !focus.records[0]) {
                     res.status(404).send()
                 }
                 let focusUser = tools.filterPrivacy(focus.records[0]._fields[0].properties)
