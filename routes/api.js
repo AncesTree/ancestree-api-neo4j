@@ -108,13 +108,12 @@ module.exports = function (neode) {
         const relationship = require('../actions/relationship')
 
         let props = {
-            id: data.id,
             title: data.title,
             content: data.content,
             link: data.link,
             date: data.date,    
 
-            actor: data.id_autor,
+            actor: data.id,
             other: data.id,
             type: "create",
             properties: {}
