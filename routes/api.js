@@ -127,5 +127,45 @@ module.exports = function (neode) {
             })
     })
 
+    router.post('/api/users/:a_id', function (req, res) {
+        const data = Object.assign({}, req.params, req.body)
+        neode.cypher('MATCH (a:User {id:{a_id}}) SET a.return a', data)
+            .then(user => {
+                let unfiltered = user.records[0]._fields[0].properties
+                let filtered = tools.filterPrivacy(user.records[0]._fields[0].properties)
+                if(unfiltered.id == data.a_id){
+                    return { "users": unfiltered }
+                }
+                else {
+                    return { "users": filtered }
+                }
+            })
+            .then(json => {
+                res.status(200).send(json)
+            })
+            .catch(e =>
+                res.status(500).send(e))
+    });
+
+    router.get('/api/users/picture/:a_id', function (req, res) {
+        const data = Object.assign({}, req.params, req.body)
+        console.log(data)
+        neode.find('User', data.a_id)
+        .then( result => {
+            result.update({
+                profileImageUrl: data.url,
+                firstname: result._properties.get('firstname'),
+                lastname: result._properties.get('lastname'),
+                email: result._properties.get('email'),
+                privacy: result._properties.get('privacy'),
+                departement: result._properties.get('departement')
+            })
+            .then(json => res.status(200).send()
+            )
+            .catch(e => {res.status(500).send()})
+        })
+        .catch( e => {res.status(500).send()})
+    });
+
     return router;
 };
