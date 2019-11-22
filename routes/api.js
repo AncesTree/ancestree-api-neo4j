@@ -147,18 +147,24 @@ module.exports = function (neode) {
                 res.status(500).send(e))
     });
 
-    router.get('/api/users/picture/:a_id', function (req, res) {
+    router.put('/api/users/:a_id', function (req, res) {
         const data = Object.assign({}, req.params, req.body)
         console.log(data)
         neode.find('User', data.a_id)
         .then( result => {
             result.update({
-                profileImageUrl: data.url,
-                firstname: result._properties.get('firstname'),
-                lastname: result._properties.get('lastname'),
-                email: result._properties.get('email'),
-                privacy: result._properties.get('privacy'),
-                departement: result._properties.get('departement')
+                firstname: data.firstname || result._properties.get('firstname'),
+                lastname: data.lastname || result._properties.get('lastname'),
+                birthdate: data.birthdate || result._properties.get('birthdate'),
+                phone: data.phone || result._properties.get('phone'),
+                email: data.email || result._properties.get('email'),
+                start_year: data.start_year || result._properties.get('start_year'),
+                end_year: data.end_year || result._properties.get('end_year'),
+                privacy: data.privacy || result._properties.get('privacy'),
+                profileImageUrl: data.profileImageUrl || result._properties.get('profileImageUrl'),
+                departement: data.departement || result._properties.get('departement'),
+                company: data.company || result._properties.get('company'),
+                profession: data.profession || result._properties.get('profession')
             })
             .then(json => res.status(200).send()
             )
