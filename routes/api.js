@@ -4,6 +4,9 @@ module.exports = function (neode) {
 
     router.post('/api/relationship', (req, res) => {
         let data = Object.assign({}, req.params, req.body)
+        console.log(req.params)
+        console.log(req.body)
+        console.log(data)
         return action = require('../actions/relationship').createRelationship(req, res, tools, neode, data)
     });
 
