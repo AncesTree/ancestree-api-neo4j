@@ -53,9 +53,6 @@ module.exports = {
     },
     "profileImageUrl": {
         type: "string",
-        uri: {
-            scheme: ["http", "https"]
-        }
     },
     isSenior: {
         type: 'relationships',
